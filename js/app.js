@@ -1,39 +1,65 @@
 // Variables
 const ingresos = [
     new Ingreso("Salario", 2000),
-    new Ingreso('Venta auto', 5000)
+    new Ingreso("Venta auto", 5000)
 ];
 
 const egresos = [
-    new Egreso('Renta', 4000),
-    new Egreso('Ropa', 800)
+    new Egreso("Renta", 4000),
+    new Egreso("Ropa", 800)
 ];
 
-var porcentajeEgreso = 0.00;
-var totalIngresos = 0.00;
-var totalEgresos = 0.00;
+let porcentajeEgreso = 0.00;
+let totalIngresos = 0.00;
+let totalEgresos = 0.00;
 
-//carga de funcionrs generales
-
+// Cargar la aplicacion
 function cargarApp() {
     cargarCabecero();
+    cargarIngresos();
+    cargarEgresos();
 }
 
 function cargarCabecero() {
-    let totalIngresos = 0;
-    let totalEgresos = 0;
-    totalIngresos = total_Ingresos(ingresos);
-    totalEgresos = total_Egresos(egresos);
-    const presupuesto = totalIngresos - totalEgresos;
-    const porcentajeEgreso = totalEgresos / totalIngresos;
-    document.getElementById("presupuesto").innerHTML = formatoMoneda(presupuesto);
-    document.getElementById("porcentaje").innerHTML = formatoPorcentaje(porcentajeEgreso);
-    document.getElementById("ingresos").innerHTML = formatoMoneda(totalIngresos);
-    document.getElementById("egresos").innerHTML = formatoMoneda(totalEgresos);
+    let presupuesto = totalIngresos() - totalEgresos(); 
+    let porcentajeEgreso = totalEgresos() / totalIngresos();
+    let idPresupuesto = document.getElementById("presupuesto");
+    idPresupuesto.innerHTML = formatoMoneda(presupuesto);
+    let idPorcentaje = document.getElementById("porcentaje");
+    idPorcentaje.innerHTML = formatoPorcentaje(porcentajeEgreso);
+    let idIngresos = document.getElementById("ingresos");
+    idIngresos.innerHTML = formatoMoneda(totalIngresos());
+    let idEgresos = document.getElementById("egresos");
+    idEgresos.innerHTML = formatoMoneda(totalEgresos());
+    // let totalIngresos = 0;
+    // let totalEgresos = 0;
+    // totalIngresos = total_Ingresos(ingresos);
+    // totalEgresos = total_Egresos(egresos);
+    // const presupuesto = totalIngresos - totalEgresos;
+    // const porcentajeEgreso = totalEgresos / totalIngresos;
+    // document.getElementById("presupuesto").innerHTML = formatoMoneda(presupuesto);
+    // document.getElementById("porcentaje").innerHTML = formatoPorcentaje(porcentajeEgreso);
+    // document.getElementById("ingresos").innerHTML = formatoMoneda(totalIngresos);
+    // document.getElementById("egresos").innerHTML = formatoMoneda(totalEgresos);
 };
 
-cargarIngresos();
-cargarEgresos();
+// Cargar los elementos de listas de ingreso y egresos
+const cargarIngresos = () => {
+    let ingresosHTML = "";
+    for (const ingreso of ingresos) {
+        ingresoHTML += crearIngresoHTML(ingreso);
+    }
+    document.getElementById("lista-ingresos").innerHTML = ingresosHTML;
+
+};
+
+const cargarEgresos = () => {
+    let egresosHTML = "";
+    for (const egreso of egresos) {
+        egresoHTML += crearEgresoHTML(egreso);
+    }
+    document.getElementById("lista-egresos").innerHTML = egresosHTML;
+};
 
 // Funcion Ingresos cargarlos
 const total_Ingresos = (ingresos) => {
@@ -54,37 +80,18 @@ const total_Egresos = (egresos) => {
     return totalEgreso;
 };
 
-//formatos de numeros
-
-const formatoMoneda = (valor) => {
-    return valor.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2 });
-};
+// Formatos
 
 const formatoPorcentaje = (valor) => {
-    return valor.toLocaleString('es-MX', { style: 'percent', minimumFractionDigits: 2 });
+    return valor.toLocaleString("es-MX", { style: "percent", minimumFractionDigits: 2 });
 };
 
-
-const cargarIngresos = () => {
-    let ingresosHTML = "";
-    for (const ingreso of ingresos) {
-        const ingresoHTML = crearIngresoHTML(ingreso);
-        ingresosHTML += ingresoHTML;
-    }
-    document.getElementById('lista-ingresos').innerHTML = ingresosHTML;
+const formatoMoneda = (valor) => {
+    return valor.toLocaleString("es-MX", { style: "currency", currency: "MXN", minimumFractionDigits: 2 });
 };
 
-const cargarEgresos = () => {
-    let egresosHTML = "";
-    for (const egreso of egresos) {
-        const egresoHTML = crearEgresoHTML(egreso);
-        egresosHTML += egresoHTML;
-    }
-     document.getElementById("lista-egresos").innerHTML = egresosHTML;
-};
-
-//edits html
-
+// Creacion de elementos
+// Creacion ingresos
 const crearIngresoHTML = (ingreso) => {
     let ingresoHTML = `
       <div class="elemento limpiarEstilos">
@@ -94,7 +101,7 @@ const crearIngresoHTML = (ingreso) => {
           <div class="elemento_eliminar">
             <button class="elemento_eliminar--btn">
              <ion-button>
-              <ion-icon name="close-circle-outline" onclick='eliminarIngreso(${ingreso.id})'></ion-icon>
+              <ion-icon name="close-circle-outline" onclick="eliminarIngreso(${ingreso.id})"></ion-icon>
               </ion-button>
              </button>
           </div>
@@ -103,6 +110,8 @@ const crearIngresoHTML = (ingreso) => {
     `;
     return ingresoHTML;
 };
+
+// Creacion de Egresos
 
 const crearEgresoHTML = (egreso) => {
     porcentajeEgreso = egreso.valor / total_Ingresos(ingresos);
@@ -115,7 +124,7 @@ const crearEgresoHTML = (egreso) => {
           <div class="elemento_eliminar">
             <button class="elemento_eliminar--btn">
              <ion-button>
-              <ion-icon name="close-circle-outline" aria-hidden="true" onclick='eliminarEgreso(${egreso.id})'></ion-icon>
+              <ion-icon name="close-circle-outline" aria-hidden="true" onclick="eliminarEgreso(${egreso.id})"></ion-icon>
               </ion-button>
              </button>
           </div>
@@ -125,60 +134,50 @@ const crearEgresoHTML = (egreso) => {
     return egresoHTML;
 };
 
+// Eliminar daros de ingreso
 const eliminarIngreso = (id) => {
-    const indiceEliminar = ingresos.findIndex((ingreso) => ingreso.id === id);
+    let indiceEliminar = egresos.findIndex(indice => indice.id === id);
     ingresos.splice(indiceEliminar, 1);
-    totalIngresos = 0;
-    for (let ingreso of ingresos) {
-        totalIngresos += ingreso.valor;
-    }
-    porcentajeEgreso = totalEgresos / totalIngresos;    
     cargarCabecero();
     cargarIngresos();
-    cargarEgresos();
 };
 
+// Eliminar dato de egresos
 const eliminarEgreso = (id) => {
-    const indiceEliminar = egresos.findIndex((egreso) => egreso.id === id);
+    let indiceEliminar = egresos.findIndex(indice => indice.id === id);
     egresos.splice(indiceEliminar, 1);
-    totalEgresos = 0;
-    for (let egreso of egresos) {
-        totalEgresos += egreso.valor;
-    }
-    porcentajeEgreso = totalEgresos / totalIngresos;
     cargarCabecero();
     cargarEgresos();
 };
 
+// Agregar dato
 const agregarDato = () => {
-    const forma = document.getElementById('forma');
-    const tipo = forma.tipo.value;
-    const descripcion = forma.descripcion.value;
-    if (descripcion == "") {
-        alert("Favor de indicar la descripción");
-    }
-    const valor = Number(forma.importe.value);
-    // console.log("Tipo = " + typeof (valor));
-    if (descripcion !== '' && valor !== '') {
-        if (tipo === 'ingreso') {
-            ingresos.push(new Ingreso(descripcion, valor));
-            totalIngresos = 0;
-            for (let ingreso of ingresos) {
-                totalIngresos += ingreso.valor;
-            }
+    let forma = document.getElementById("forma");
+    let tipo = document.getElementById("tipo");
+    let descripcion = document.getElementById("descripcion");
+    let valor = document.getElementById("valor");
+    if (descripcion.value !== "" && valor.value !== "") {
+        if (tipo.value === "ingreso") {
+            let ingreso = new Ingreso(descripcion.value, parseFloat(valor.value))
+            ingresos.push(ingreso);
             cargarCabecero();
             cargarIngresos();
-            cargarEgresos();
+            descripcion.value = "";
+            valor.value = "";
         }
-        else {
-            egresos.push(new Egreso(descripcion, valor));
-            totalEgresos = 0;
-            for (let egreso of egresos) {
-                totalEgresos += egreso.valor;
-            }
+        else if(tipo.value === "egreso"){
+            let egreso = new Egreso(descripcion.value, parseFloat(valor.value))
+            egresos.push(egreso);
             cargarCabecero();
             cargarEgresos();
+            descripcion.value = "";
+            valor.value = "";
         }
     }
-    document.getElementById("forma").reset();
+    else{
+        alert("La DESCRIPCION y el VALOR debe ser llenada");
+    }
 }
+
+cargarIngresos();
+cargarEgresos();
